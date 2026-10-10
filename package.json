@@ -1,0 +1,48 @@
+{
+  "name": "foranna",
+  "version": "1.0.0",
+  "description": "ForAnna — a cute mailbox surprise packaged as a desktop app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package:win": "electron-builder --win portable --x64"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eigenvectr/DateAnna.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eigenvectr/DateAnna/issues"
+  },
+  "homepage": "https://github.com/eigenvectr/DateAnna#readme",
+  "devDependencies": {
+    "electron": "^38.3.0",
+    "electron-builder": "^25.1.7"
+  },
+  "build": {
+    "productName": "ForAnna",
+    "appId": "com.foranna.mailbox",
+    "files": [
+      "**/*",
+      "!dist/**",
+      "!release/**",
+      "!node_modules/.cache/**"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "icon": "build/foranna.ico",
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "portable",
+          "arch": "x64"
+        }
+      ]
+    }
+  }
+}

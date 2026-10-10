@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Anna <3 </title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Press Start 2P", cursive;
+        background: #2c1810;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .game-container {
+        width: 95%;
+        max-width: 1200px;
+        height: 90vh;
+        max-height: 800px;
+        background: #000;
+        border: 6px solid #8b4513;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      }
+
+      .farm-scene {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        background-image: url("farm.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+
+      .misa-cat {
+        position: absolute;
+        bottom: 15%;
+        left: 30%;
+        width: 40px;
+        height: 40px;
+        background-image: url("misa.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        z-index: 3;
+        cursor: pointer;
+        transition: transform 0.3s;
+      }
+
+      .misa-cat:hover {
+        transform: scale(1.2);
+      }
+
+      .misa-cat::after {
+        content: "💕";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 16px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .misa-cat:hover::after {
+        opacity: 1;
+      }
+
+      .cat-meow {
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        padding: 5px 10px;
+        border-radius: 10px;
+        font-size: 8px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+
+      .misa-cat:active .cat-meow {
+        opacity: 1;
+      }
+
+      .mailbox-glow {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, rgba(255, 0, 0, 0.6), transparent);
+        border-radius: 50%;
+        animation: glow 2s infinite;
+        pointer-events: none;
+        display: none;
+        z-index: 5;
+      }
+
+      @keyframes glow {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 0.4;
+        }
+      }
+
+      .click-area {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        cursor: pointer;
+        z-index: 10;
+        display: none;
+      }
+
+      .click-area:hover + .mailbox-glow {
+        animation: glow 0.5s infinite;
+      }
+
+      .instruction {
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 15px 25px;
+        border: 3px solid #ff0000;
+        border-radius: 8px;
+        font-size: 11px;
+        z-index: 20;
+        text-align: center;
+        display: none;
+        animation: pulse 2s infinite;
+        color: #ff0000;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          transform: translateX(-50%) scale(1.05);
+        }
+      }
+
+      .anna-sprite {
+        position: absolute;
+        width: 48px;
+        height: 64px;
+        background-image: url("anna.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        image-rendering: pixelated;
+        z-index: 8;
+        display: none;
+      }
+
+
+      .anna-sprite.walking {
+        animation: walk 0.5s infinite alternate;
+      }
+
+
+      .anna-sprite::before {
+        content: none;
+      }
+
+      @keyframes walk {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-3px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+
+      .player-sprite {
+        position: absolute;
+        width: 48px;
+        height: 64px;
+        background-image: url("eggward.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        z-index: 8;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+
+      .player-sprite.show {
+        opacity: 1;
+      }
+
+      .player-sprite.running {
+        animation: run 0.4s infinite alternate;
+      }
+
+      @keyframes run {
+        0% {
+          transform: translateY(0) scaleX(1);
+        }
+        25% {
+          transform: translateY(-5px) scaleX(0.95);
+        }
+        50% {
+          transform: translateY(0) scaleX(1);
+        }
+        75% {
+          transform: translateY(-3px) scaleX(1.05);
+        }
+        100% {
+          transform: translateY(0) scaleX(1);
+        }
+      }
+
+
+      .flowers-in-hand {
+        position: absolute;
+
+        bottom: 12px;
+        left: 34px;
+        font-size: 20px;
+        line-height: 1;
+        display: none;
+        transform-origin: bottom left;
+        animation: sway 800ms ease-in-out infinite alternate;
+        pointer-events: none;
+      }
+
+      .flowers-in-hand.show {
+        display: block;
+      }
+
+      @keyframes sway {
+        from {
+          transform: rotate(-8deg) translateY(0px);
+        }
+        to {
+          transform: rotate(8deg) translateY(-1px);
+        }
+      }
+
+
+      .flower-transfer {
+        position: absolute;
+        font-size: 32px;
+        z-index: 15;
+        display: none;
+        animation: floatToAnna 1.5s ease-in-out;
+      }
+
+      @keyframes floatToAnna {
+        0% {
+          transform: translate(0, 0) scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: translate(-30px, -20px) scale(1.3);
+        }
+        100% {
+          transform: translate(-60px, 0) scale(1);
+          opacity: 0.8;
+        }
+      }
+
+      .letter-modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: linear-gradient(135deg, #fff8dc, #ffe4e1);
+        border: 5px solid #8b4513;
+        border-radius: 15px;
+        padding: 35px;
+        max-width: 550px;
+        width: 90%;
+        z-index: 100;
+        transition: transform 0.5s;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+      }
+
+      .letter-modal.show {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .letter-header {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #ff0000;
+        font-size: 14px;
+        text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+      }
+
+      .letter-content {
+        background: white;
+        border: 3px solid #ff0000;
+        border-radius: 8px;
+        padding: 25px;
+        margin-bottom: 25px;
+        line-height: 2.2;
+        font-size: 11px;
+        text-align: center;
+        position: relative;
+      }
+
+      .letter-content::before,
+      .letter-content::after {
+        content: "🌹";
+        position: absolute;
+        font-size: 20px;
+      }
+
+      .letter-content::before {
+        top: 10px;
+        left: 10px;
+      }
+
+      .letter-content::after {
+        bottom: 10px;
+        right: 10px;
+      }
+
+      .letter-content .highlight {
+        color: #ff0000;
+        font-size: 13px;
+        font-weight: bold;
+        display: block;
+        margin: 20px 0;
+        text-shadow: 1px 1px 2px rgba(255, 0, 0, 0.2);
+      }
+
+      .choice-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+      }
+
+      .choice-btn {
+        background: linear-gradient(135deg, #4caf50, #45a049);
+        color: white;
+        border: 3px solid #2e7d32;
+        padding: 15px 30px;
+        font-family: "Press Start 2P", cursive;
+        font-size: 12px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s;
+        text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.3);
+      }
+
+      .choice-btn:hover {
+        transform: scale(1.1) translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      }
+
+      .choice-btn.no {
+        background: linear-gradient(135deg, #ff6b6b, #ff5252);
+        border-color: #ff0000;
+      }
+
+      .celebration-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 0, 0, 0.9),
+          rgba(255, 107, 107, 0.9)
+        );
+        display: none;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 200;
+      }
+
+      .celebration-overlay.show {
+        display: flex;
+      }
+
+      .celebration-text {
+        color: white;
+        font-size: 26px;
+        text-align: center;
+        text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
+        animation: bounce 1s infinite;
+      }
+
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .heart-explosion {
+        position: absolute;
+        font-size: 50px;
+        animation: explode 3s infinite;
+      }
+
+      @keyframes explode {
+        0% {
+          transform: scale(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(4) rotate(360deg);
+          opacity: 0;
+        }
+      }
+
+      .start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #ff0000 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        z-index: 300;
+        transition: opacity 0.5s;
+      }
+
+      .start-screen.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .start-btn {
+        background: linear-gradient(135deg, #ff0000, #ff6b6b);
+        color: white;
+        border: 4px solid #8b0000;
+        padding: 20px 40px;
+        font-family: "Press Start 2P", cursive;
+        font-size: 18px;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: all 0.3s;
+        animation: pulse 2s infinite;
+        text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3);
+      }
+
+      .start-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .start-title {
+        color: white;
+        font-size: 24px;
+        margin-bottom: 30px;
+        text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.3);
+      }
+
+      .login-wrap {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .date-input {
+        font-family: "Press Start 2P", cursive;
+        font-size: 14px;
+        padding: 12px 14px;
+        border: 4px solid #8b0000;
+        border-radius: 10px;
+        outline: none;
+      }
+
+      .login-error {
+        margin-top: 12px;
+        color: #fff;
+        font-size: 10px;
+        min-height: 1em;
+        text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .shake {
+        animation: shake 0.4s linear;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-6px);
+        }
+        50% {
+          transform: translateX(6px);
+        }
+        75% {
+          transform: translateX(-3px);
+        }
+      }
+
+      .subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 12px;
+        margin-bottom: 20px;
+      }
+
+
+      @media (max-width: 768px) {
+        .game-container {
+          width: 100%;
+          height: 100vh;
+          border-radius: 0;
+          border: none;
+        }
+
+        .instruction {
+          font-size: 9px !important;
+          padding: 10px 15px !important;
+        }
+
+        .letter-modal {
+          padding: 20px !important;
+          width: 95% !important;
+        }
+
+        .letter-content {
+          padding: 15px !important;
+          font-size: 9px !important;
+        }
+
+        .misa-cat {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="start-screen" id="startScreen">
+      <h1 class="start-title">Anna Lin check 🔒</h1>
+      <p class="subtitle">Enter the special date (MM/DD)</p>
+
+      <div class="login-wrap">
+        <input
+          id="dateInput"
+          type="text"
+          inputmode="numeric"
+          maxlength="5"
+          placeholder="MM/DD"
+          autocomplete="off"
+          class="date-input"
+        />
+        <button class="start-btn" id="enterBtn" onclick="validateAnna()">
+          Enter
+        </button>
+      </div>
+
+      <div id="loginError" class="login-error" aria-live="polite"></div>
+    </div>
+
+    <div class="game-container">
+      <div class="farm-scene" id="farmScene">
+        <div class="instruction" id="instruction">
+          📬 Anna! Check the mailbox, You have mail! 📬
+        </div>
+
+
+        <div class="misa-cat" onclick="petMisa()">
+          <div class="cat-meow">Meow! 🐱</div>
+        </div>
+
+        <div class="click-area" id="mailboxClick" onclick="openMail()"></div>
+        <div class="mailbox-glow" id="mailboxGlow"></div>
+
+        <div class="anna-sprite" id="anna"></div>
+
+        <div class="player-sprite" id="player">
+          <div class="flowers-in-hand" id="flowers">🌹💐</div>
+        </div>
+
+        <div class="flower-transfer" id="flowerTransfer">🌹💐</div>
+      </div>
+    </div>
+
+    <div class="letter-modal" id="letterModal">
+      <div class="letter-header">💌 A Letter from Edward :) 💌</div>
+      <div class="letter-content">
+        <p>Dear Anna,</p>
+        <p style="margin-top: 15px">
+          I am so grateful to have met you. You’re brilliant, beautiful, and I love seeing
+          you smile.
+        </p>
+        <p style="margin-top: 15px">
+          I treasure every moment we’ve shared so far — our good-night calls,
+          watching you crush those pull-ups, spam musubi sunsets, after-work
+          hikes, baking apple pie together, exchanging flowers, filling your car tires with
+          air.<br />
+          kissing implications... haha
+        </p>
+        <p style="margin-top: 15px">
+          The sun feels warmer with you.<br />
+          The stars shine brighter with you.<br />
+          The air seems fresher with you.<br />
+          Life is better with you! :)
+        </p>
+        <p class="highlight">Will you be my girlfriend?</p>
+      </div>
+      <div class="choice-buttons">
+        <button class="choice-btn" onclick="handleYes()">💕 Yes! 💕</button>
+        <button class="choice-btn no" onclick="handleNo()">no thx</button>
+      </div>
+    </div>
+
+    <div class="celebration-overlay" id="celebration">
+      <div class="celebration-text">
+        <h1>✨ 10 / 10 — Our day ✨</h1>
+        <p style="margin-top: 20px">
+          Yay! 😊 Can't wait to make more great memories with you.
+        </p>
+        <p style="margin-top: 20px">Anna & Edward :D</p>
+        <p style="margin-top: 40px; font-size: 10px">
+          <a href="index.html" style="color: #fff">one year later... 💕</a>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      let canClick = false;
+      let misaClicks = 0;
+
+      function startStory() {
+        document.getElementById("startScreen").classList.add("hide");
+
+
+        setTimeout(() => {
+          setupMailbox();
+          showAnna();
+        }, 1000);
+      }
+
+      function placeMisaNearMailbox(mailboxLeftPct, mailboxBottomPct) {
+        const misa = document.querySelector(".misa-cat");
+
+
+        const misaLeftPct = mailboxLeftPct + 6;
+        const misaBottomPct = mailboxBottomPct - 3;
+
+        misa.style.left = `${misaLeftPct}%`;
+        misa.style.bottom = `${misaBottomPct}%`;
+      }
+
+      function setupMailbox() {
+        const mailboxClick = document.getElementById("mailboxClick");
+        const mailboxGlow = document.getElementById("mailboxGlow");
+
+        const mailboxLeftPct = 78;
+        const mailboxBottomPct = 53;
+
+
+        mailboxClick.style.left = "75%";
+        mailboxClick.style.bottom = "50%";
+        mailboxClick.style.display = "block";
+
+        mailboxGlow.style.left = "78%";
+        mailboxGlow.style.bottom = "53%";
+        mailboxGlow.style.display = "block";
+
+        placeMisaNearMailbox(mailboxLeftPct, mailboxBottomPct);
+      }
+
+      function showAnna() {
+        const anna = document.getElementById("anna");
+        anna.style.display = "block";
+        anna.style.left = "20%";
+        anna.style.bottom = "40%";
+        anna.classList.add("walking");
+
+        document.getElementById("instruction").style.display = "block";
+
+
+        let position = 20;
+        let verticalPos = 40;
+        const walkInterval = setInterval(() => {
+          position += 1.5;
+          verticalPos += 0.4;
+          anna.style.left = position + "%";
+          anna.style.bottom = verticalPos + "%";
+
+          if (position >= 72) {
+            clearInterval(walkInterval);
+            anna.classList.remove("walking");
+            canClick = true;
+          }
+        }, 50);
+      }
+
+      function petMisa() {
+        misaClicks++;
+        const messages = [
+          "Purrrr~",
+          "Meow!",
+          "*happy neko*",
+          "im the cutest cat da world",
+          "Misa loves you!",
+        ];
+        const meowDiv = document.querySelector(".cat-meow");
+        meowDiv.textContent = messages[misaClicks % messages.length];
+
+
+        if (misaClicks === 5) {
+          meowDiv.textContent = "Misa approves! 💕";
+        }
+      }
+
+      function openMail() {
+        if (!canClick) return;
+
+        document.getElementById("instruction").style.display = "none";
+        document.getElementById("mailboxGlow").style.display = "none";
+        document.getElementById("letterModal").classList.add("show");
+      }
+
+      function handleYes() {
+        document.getElementById("letterModal").classList.remove("show");
+
+
+        setTimeout(() => {
+          const player = document.getElementById("player");
+          const anna = document.getElementById("anna");
+          player.style.display = "block";
+          player.style.left = "20%";
+          player.style.bottom = "40%";
+
+          setTimeout(() => {
+            player.classList.add("show", "running");
+            document.getElementById("flowers").classList.add("show");
+
+
+            let playerPos = 20;
+            let playerVertPos = 40;
+            const runInterval = setInterval(() => {
+              playerPos += 2.5;
+              playerVertPos += 0.3;
+              player.style.left = playerPos + "%";
+              player.style.bottom = playerVertPos + "%";
+
+              if (playerPos >= 64) {
+                clearInterval(runInterval);
+                player.classList.remove("running");
+
+
+                setTimeout(() => {
+                  giveFlowers();
+                }, 500);
+              }
+            }, 50);
+          }, 100);
+        }, 500);
+      }
+
+      function giveFlowers() {
+        const player = document.getElementById("player");
+        const anna = document.getElementById("anna");
+        const inHand = document.getElementById("flowers");
+        const flowerTransfer = document.getElementById("flowerTransfer");
+
+
+        inHand.style.display = "none";
+
+
+        const playerRect = player.getBoundingClientRect();
+        const annaRect = anna.getBoundingClientRect();
+
+
+        const handX = playerRect.left + playerRect.width * 0.75;
+        const handY = playerRect.top + playerRect.height * 0.35;
+
+
+        const annaX = annaRect.left + annaRect.width * 0.4;
+        const annaY = annaRect.top + annaRect.height * 0.35;
+
+
+        flowerTransfer.style.display = "block";
+        flowerTransfer.style.left = `${handX}px`;
+        flowerTransfer.style.top = `${handY}px`;
+        flowerTransfer.style.position = "fixed";
+
+
+        const dx = annaX - handX;
+        const dy = annaY - handY;
+
+        flowerTransfer.animate(
+          [
+            { transform: "translate(0, 0) scale(1)", opacity: 1 },
+            {
+              transform: `translate(${dx * 0.5}px, ${dy - 30}px) scale(1.2)`,
+              opacity: 0.9,
+            },
+            { transform: `translate(${dx}px, ${dy}px) scale(1)`, opacity: 0.8 },
+          ],
+          {
+            duration: 1000,
+            easing: "cubic-bezier(.25,.8,.25,1)",
+            fill: "forwards",
+          }
+        ).onfinish = () => {
+
+          flowerTransfer.style.display = "none";
+
+
+          showAnnaFlowers();
+
+
+          setTimeout(() => {
+            document.getElementById("celebration").classList.add("show");
+            createHearts();
+          }, 1000);
+        };
+      }
+
+
+      function showAnnaFlowers() {
+        const anna = document.getElementById("anna");
+        const tempFlower = document.createElement("div");
+        tempFlower.textContent = "🌹💐";
+        tempFlower.style.position = "absolute";
+        tempFlower.style.left = "50%";
+        tempFlower.style.bottom = "15px";
+        tempFlower.style.transform = "translateX(-50%)";
+        tempFlower.style.fontSize = "22px";
+        tempFlower.style.animation = "sway 1s infinite alternate";
+        tempFlower.style.pointerEvents = "none";
+        tempFlower.style.zIndex = 12;
+
+        anna.appendChild(tempFlower);
+
+
+        setTimeout(() => {
+          tempFlower.style.transition = "opacity 1s";
+          tempFlower.style.opacity = 0;
+          setTimeout(() => tempFlower.remove(), 1000);
+        }, 2000);
+      }
+
+      let noClickCount = 0;
+
+      function handleNo() {
+        noClickCount++;
+
+        const messages = [
+          "Wait... are you sure? 😢",
+          "But think of our spam musubi sunsets! 🌅",
+          "Sighhhh wrong choice 😔",
+          "Please reconsider... pretty please? 🥺",
+          "I'll fill your tires for a life time tho 🥺",
+        ];
+
+
+        if (noClickCount < messages.length) {
+          alert(messages[noClickCount - 1]);
+        } else {
+          alert("Okay okay... let's try this again. Say yes this time?");
+        }
+      }
+
+      const noBtn = document.querySelector(".choice-btn.no");
+      noBtn.addEventListener("mouseover", () => {
+
+        const offsetX = (Math.random() - 0.5) * 200;
+        const offsetY = (Math.random() - 0.5) * 100;
+        noBtn.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+      });
+
+      function normalize(input) {
+        return input.trim().replace(/\s+/g, "");
+      }
+
+      function validateAnna() {
+        const input = document.getElementById("dateInput");
+        const error = document.getElementById("loginError");
+        const expected = "10/10";
+
+        const cleaned = normalize(input.value);
+        const asSlash = cleaned.includes("/")
+          ? cleaned
+          : cleaned.length === 4
+          ? `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`
+          : cleaned;
+
+        if (asSlash === expected) {
+
+          error.style.opacity = 0;
+          document.getElementById("startScreen").classList.add("hide");
+          setTimeout(() => {
+            setupMailbox();
+            showAnna();
+          }, 1000);
+        } else {
+
+          error.textContent = "(hint: it's how adorable you are on a scale out of 10 *if you didn't break the scale*)";
+          error.style.opacity = 1;
+
+          const screen = document.getElementById("startScreen");
+          screen.classList.remove("shake");
+          void screen.offsetWidth;
+          screen.classList.add("shake");
+          input.focus();
+          input.select();
+        }
+      }
+
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("dateInput");
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            validateAnna();
+          }
+        });
+      });
+
+      function createHearts() {
+        for (let i = 0; i < 15; i++) {
+          const heart = document.createElement("div");
+          heart.className = "heart-explosion";
+          heart.innerHTML = "❤️";
+          heart.style.left = Math.random() * 100 + "%";
+          heart.style.top = Math.random() * 100 + "%";
+          heart.style.animationDelay = Math.random() * 3 + "s";
+          document.getElementById("celebration").appendChild(heart);
+        }
+      }
+    </script>
+  </body>
+</html>
