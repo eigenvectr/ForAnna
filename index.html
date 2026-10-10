@@ -144,6 +144,25 @@
         filter: drop-shadow(0 0 6px #ff4d6d);
       }
       .bouquet:hover { transform: scale(1.25); }
+      .note-tag {
+        position: absolute;
+        top: -34px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        border: 2px solid #ff0000;
+        border-radius: 8px;
+        padding: 5px 8px;
+        font-size: 8px;
+        color: #ff0000;
+        white-space: nowrap;
+        filter: none;
+        animation: bob 0.8s ease-in-out infinite alternate;
+      }
+      @keyframes bob {
+        from { transform: translateX(-50%) translateY(0); }
+        to { transform: translateX(-50%) translateY(-5px); }
+      }
       @keyframes glowpulse {
         from { filter: drop-shadow(0 0 4px #ff4d6d); }
         to { filter: drop-shadow(0 0 14px #ff0033); }
@@ -362,14 +381,17 @@
 
     <div class="game-container">
       <div class="farm-scene" id="farmScene">
-        <div class="instruction" id="instruction">💐 Anna, click the flowers! 💐</div>
+        <div class="instruction" id="instruction">💌 There's a note tucked in the flowers... 💌</div>
 
         <div class="misa-cat" onclick="petMisa()">
           <div class="cat-meow">Meow! 🐱</div>
         </div>
 
         <div class="sprite" id="anna">
-          <div class="bouquet" id="bouquet" onclick="openLetter()">🌹💐</div>
+          <div class="bouquet" id="bouquet" onclick="openLetter()">
+            <div class="note-tag">💌 open me</div>
+            💐💌
+          </div>
         </div>
         <div class="sprite" id="player">
           <div class="flowers-in-hand" id="flowers">🌹💐</div>
@@ -384,25 +406,14 @@
       <div class="letter-content">
         <p>Dear Anna,</p>
         <p>
-          One year ago you opened a little pixel mailbox and said yes.
-          Easily the best 10/10 of my life.
+          One year ago you said yes. Best 10/10 of my life.
         </p>
         <p>
-          <span id="dayCount">365</span> days later and I still can't believe I get to be yours.
-          More good-night calls, more pull-ups I still can't keep up with, more spam musubi sunsets,
-          more hikes, more pies, more tires filled with air.
-          And a whole lot more kissing, no implications needed this time. haha
-        </p>
-        <!-- add this year's memories here -->
-        <p>
-          Here's the thing about my love for you: it doesn't sit still.
-          It grows. Every day I learn something new about you,
-          and every day I fall for you a little more.
+          <span id="dayCount">365</span> days later, my love for you keeps growing.
+          Every day I fall for you a little more.
         </p>
         <p>
           The sun still feels warmer with you.<br />
-          The stars still shine brighter with you.<br />
-          The air still seems fresher with you.<br />
           Life is still better with you! :)
         </p>
         <p class="highlight">Happy One Year Anniversary 💕<br />Here's to many more.</p>
